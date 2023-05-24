@@ -9,7 +9,7 @@ class ApiService {
     private readonly httpClient: HttpClient
   ) {}
 
-  private host = 'http://localhost:5001'
+  private host = process.env.REACT_APP_API_URL
 
   login(body: LoginRequest): Promise<LoginResponse> {
     return this.post<LoginResponse>('/user/login', body);
