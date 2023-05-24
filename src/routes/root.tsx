@@ -12,6 +12,13 @@ const PrivateRoute: FC<{ component: ComponentType }> = ({ component: Component, 
   return <LoginPage />
 };
 
+const UnauthenticatedRoute: FC<{ component: ComponentType }> = ({ component: Component, ...rest }) => {
+  if (!isAuthenticated()) {
+    return <Component {...rest} />;
+  }
+  return <DashboardPage />
+};
+
 export const router = createBrowserRouter([
   {
     path: "/",
@@ -20,6 +27,6 @@ export const router = createBrowserRouter([
   },
   {
     path: "/login",
-    element: <LoginPage />
+    element: <UnauthenticatedRoute component={LoginPage} />
   }
 ]);

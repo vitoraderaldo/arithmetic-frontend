@@ -5,14 +5,31 @@ import {
   TextField,
   Button,
   Box,
+  CircularProgress,
 } from '@mui/material';
+import { apiService } from '../api/api.service';
+import { useNavigate } from 'react-router-dom';
 
 export const LoginPage = () => {
-  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const navigator = useNavigate();
+  const localStorage = window.localStorage;
 
-  const handleLogin = () => {
-    // Handle login logic here
+  const handleLogin = async () => {
+    try {
+      setIsLoading(true);
+      setErrorMessage('');
+      const response = await apiService.login({ email, password })
+      localStorage.setItem('authentication', JSON.stringify(response));
+      navigator('/');
+    } catch (err) {
+      setErrorMessage('Invalid email or password');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -30,10 +47,10 @@ export const LoginPage = () => {
           Login
         </Typography>
         <TextField
-          label="Username"
+          label="Email"
           variant="outlined"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
           fullWidth
           margin="normal"
         />
@@ -46,14 +63,19 @@ export const LoginPage = () => {
           fullWidth
           margin="normal"
         />
+         {errorMessage && (
+          <Typography color="error" align="center" gutterBottom>
+            {errorMessage}
+          </Typography>
+        )}
         <Button
           variant="contained"
           color="primary"
           onClick={handleLogin}
           fullWidth
           style={{ marginTop: '1rem' }}
-        >
-          Login
+        > 
+          {isLoading ? <CircularProgress size={24} color="inherit" /> : 'Login'}
         </Button>
       </Box>
     </Container>
