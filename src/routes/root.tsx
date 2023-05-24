@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { LoginPage } from '../pages/login.page';
 import { DashboardPage } from '../pages/dashboard.page';
 import { isAuthenticated } from '../util/auth/is-authenticated';
+import { RecordsPage } from '../pages/records.page';
 
 const PrivateRoute: FC<{ component: ComponentType }> = ({ component: Component, ...rest }) => {
   if (isAuthenticated()) {
@@ -23,6 +24,7 @@ export const AppRouter = () => {
     <Router>
       <Routes>
         <Route path="/" element={<PrivateRoute component={DashboardPage} />} />
+        <Route path="/records" element={<PrivateRoute component={RecordsPage} />} />
         <Route path="/login" element={<UnauthenticatedRoute component={LoginPage} />} />
       </Routes>
     </Router>
