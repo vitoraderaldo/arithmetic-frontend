@@ -1,7 +1,6 @@
-import { FC, ComponentType } from 'react'
-import { createBrowserRouter } from 'react-router-dom';
+import { FC, ComponentType } from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { LoginPage } from '../pages/login.page';
-import { ErrorPage } from '../pages/error.page';
 import { DashboardPage } from '../pages/dashboard.page';
 import { isAuthenticated } from '../util/auth/is-authenticated';
 
@@ -9,24 +8,23 @@ const PrivateRoute: FC<{ component: ComponentType }> = ({ component: Component, 
   if (isAuthenticated()) {
     return <Component {...rest} />;
   }
-  return <LoginPage />
+  return <Navigate to="/login" />;
 };
 
 const UnauthenticatedRoute: FC<{ component: ComponentType }> = ({ component: Component, ...rest }) => {
   if (!isAuthenticated()) {
     return <Component {...rest} />;
   }
-  return <DashboardPage />
+  return <Navigate to="/" />;
 };
 
-export const router = createBrowserRouter([
-  {
-    path: "/",
-    errorElement: <ErrorPage />,
-    element: <PrivateRoute component={DashboardPage}/>
-  },
-  {
-    path: "/login",
-    element: <UnauthenticatedRoute component={LoginPage} />
-  }
-]);
+export const AppRouter = () => {
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<PrivateRoute component={DashboardPage} />} />
+        <Route path="/login" element={<UnauthenticatedRoute component={LoginPage} />} />
+      </Routes>
+    </Router>
+  );
+};
