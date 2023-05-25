@@ -2,6 +2,8 @@ import { HttpClient } from "./http-client.interface";
 import { LoginRequest } from "./request.types";
 import { LoginResponse } from "./response.types";
 import { AxiosService } from './axios.service'
+import { FindOperationsResponse } from "../types/operations.type";
+import { getAccessToken } from "../util/auth/is-authenticated";
 
 class ApiService {
 
@@ -15,9 +17,28 @@ class ApiService {
     return this.post<LoginResponse>('/user/login', body);
   }
 
+  getOperations(): Promise<FindOperationsResponse> {
+    return this.get<FindOperationsResponse>('/calculator/operations');
+  }
+
   private post<T>(endpoint: string, body: any, headers?: any): Promise<T> {
     const url = `${this.host}${endpoint}`
-    return this.httpClient.post<T>(url, body, headers)
+    const newHeaders = this.includeAccessToken(headers)
+    return this.httpClient.post<T>(url, body, newHeaders)
+  }
+
+  private get<T>(endpoint: string, headers?: any): Promise<T> {
+    const url = `${this.host}${endpoint}`
+    const newHeaders = this.includeAccessToken(headers)
+    return this.httpClient.get<T>(url, newHeaders)
+  }
+
+  private includeAccessToken(headers?: any): any {
+    const accessToken = getAccessToken()
+    return {
+      ...headers,
+      accessToken: accessToken
+    }
   }
 
 }

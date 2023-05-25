@@ -10,4 +10,11 @@ export class AxiosService  implements HttpClient {
     return response.data
   }
 
+  async get<T>(url: string, headers?: any): Promise<T> {
+    const response = await axios.get(url, {
+      headers
+    })
+    return response.data
+  }
+
 }

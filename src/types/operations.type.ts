@@ -1,0 +1,10 @@
+export interface Operation {
+    id: number;
+    name: string;
+    cost: number;
+    inputs: number;
+}
+
+export interface FindOperationsResponse {
+    operations: Operation[];
+}

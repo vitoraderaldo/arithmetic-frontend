@@ -1,41 +1,31 @@
 import { Button, Container, FormControl, Grid, InputLabel, MenuItem, Select, TextField, Typography } from "@mui/material";
 import { LeftMenu } from "../components/left-menu";
 import { Fragment, useEffect, useState } from "react";
+import { Operation } from "../types/operations.type";
+import { CalculationInput } from "../types/calculation-inputs.type";
+import { apiService } from "../api/api.service";
 
 export const DashboardPage = () => {
 
-  const [operations, setOperations] = useState([] as any[]);
-  const [inputs, setInputs] = useState([] as any[]);
+  const [operations, setOperations] = useState([] as Operation[]);
+  const [inputs, setInputs] = useState([] as CalculationInput[]);
 
   const [selectedOperationId, setSelectedOperation] = useState(0);
   const [cost, setCost] = useState(0);
   const [result, setResult] = useState('');
 
   useEffect(() => {
-    const response = [
-      {
-        id: 1,
-        type: 'ADDITION',
-        name: 'Addition',
-        cost: 5,
-        inputs: 2,
-      },
-      {
-        id: 2,
-        type: 'SQUARE_ROOT',
-        name: 'Square Root',
-        cost: 10,
-        inputs: 1,
-      },
-      {
-        id: 3,
-        type: 'RANDOM_STRING',
-        name: 'Random String',
-        cost: 15,
-        inputs: 0,
+
+    const loadOperations = async () => {
+      try {
+        const response = await apiService.getOperations()
+        setOperations(response.operations);
+      } catch (error) {
+        console.error(error)
       }
-    ]
-    setOperations(response);
+      
+    };
+    loadOperations();
   }, [])
 
   const onOperationChange = (e: any) => {
@@ -45,13 +35,14 @@ export const DashboardPage = () => {
     if (operation?.cost) {
       setCost(operation.cost)
     }
-    if (operation.inputs) {
+    if (operation?.inputs) {
       const inputs = [];
       for (let i = 1; i <= operation.inputs; i++) {
-        inputs.push({
+        const newInput: CalculationInput = {
           id: i,
           value: '',
-        })
+        }
+        inputs.push(newInput)
       }
       setInputs(inputs);
     } else {
