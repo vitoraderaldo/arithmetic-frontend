@@ -3,13 +3,15 @@ import { LoginRequest } from "./request.types";
 import { LoginResponse } from "./response.types";
 import { AxiosService } from './axios.service'
 import { FindOperationsResponse } from "../types/operations.type";
-import { getAccessToken } from "../util/auth/is-authenticated";
+import { getAccessToken, logoutUser, onAuthenticationError } from "../util/auth/authentication.util";
 import { CalculationResponse } from "../types/calculation.type";
+import { ApiErrorInterface } from "./api.error.interface";
 
 class ApiService {
 
   constructor(
-    private readonly httpClient: HttpClient
+    private readonly httpClient: HttpClient,
+    private readonly onError: (error: ApiErrorInterface) => void
   ) {}
 
   private host = process.env.REACT_APP_API_URL
@@ -49,13 +51,30 @@ class ApiService {
   private post<T>(endpoint: string, body: any, headers?: any): Promise<T> {
     const url = `${this.host}${endpoint}`
     const newHeaders = this.includeAccessToken(headers)
-    return this.httpClient.post<T>(url, body, newHeaders)
+    return this
+      .httpClient
+      .post<T>(url, body, newHeaders)
+      .catch((error: Error) => {
+        throw this.httpClient.prettifyError(error)
+      })
+      .catch((error: ApiErrorInterface) => {
+        this.onError(error)
+        throw error
+      })
   }
 
   private get<T>(endpoint: string, headers?: any): Promise<T> {
     const url = `${this.host}${endpoint}`
     const newHeaders = this.includeAccessToken(headers)
-    return this.httpClient.get<T>(url, newHeaders)
+    return this.httpClient
+      .get<T>(url, newHeaders)
+      .catch((error: Error) => {
+        throw this.httpClient.prettifyError(error)
+      })
+      .catch((error: ApiErrorInterface) => {
+        this.onError(error)
+        throw error
+      })
   }
 
   private includeAccessToken(headers?: any): any {
@@ -68,4 +87,8 @@ class ApiService {
 
 }
 
-export const apiService = new ApiService(new AxiosService())
+const onErrors = (error: ApiErrorInterface) => {
+  onAuthenticationError(error)
+}
+
+export const apiService = new ApiService(new AxiosService(), onErrors)

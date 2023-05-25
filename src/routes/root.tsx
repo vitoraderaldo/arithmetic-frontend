@@ -2,7 +2,7 @@ import { FC, ComponentType } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { LoginPage } from '../pages/login.page';
 import { DashboardPage } from '../pages/dashboard.page';
-import { isAuthenticated } from '../util/auth/is-authenticated';
+import { isAuthenticated } from '../util/auth/authentication.util';
 import { RecordsPage } from '../pages/records.page';
 
 const PrivateRoute: FC<{ component: ComponentType }> = ({ component: Component, ...rest }) => {

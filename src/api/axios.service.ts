@@ -1,5 +1,6 @@
-import axios from 'axios'
+import axios, { AxiosError } from 'axios'
 import { HttpClient } from "./http-client.interface";
+import { ApiErrorInterface } from './api.error.interface';
 
 export class AxiosService  implements HttpClient {
   
@@ -15,6 +16,21 @@ export class AxiosService  implements HttpClient {
       headers
     })
     return response.data
+  }
+
+  prettifyError(exception: AxiosError): ApiErrorInterface {
+    const apiError = exception.response?.data as ApiErrorInterface
+
+    const error = apiError.error || 'Unknown Error'
+    const message = apiError.message || 'An error occurred'
+    const statusCode = apiError.statusCode || exception.response?.status || 500
+
+    return {
+      error,
+      message,
+      statusCode
+    }
+    
   }
 
 }
