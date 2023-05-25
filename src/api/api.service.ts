@@ -23,9 +23,29 @@ class ApiService {
   }
 
   calculateAddition(args: number[]): Promise<CalculationResponse> {
-    return this.post<CalculationResponse>('/calculator/add', {arguments: args});
+    return this.post<CalculationResponse>('/calculator/addition', {arguments: args});
   }
 
+  calculateSubtraction(args: number[]): Promise<CalculationResponse> {
+    return this.post<CalculationResponse>('/calculator/subtraction', {arguments: args});
+  }
+
+  calculateMultiplication(args: number[]): Promise<CalculationResponse> {
+    return this.post<CalculationResponse>('/calculator/multiplication', {arguments: args});
+  }
+
+  calculateDivision(args: number[]): Promise<CalculationResponse> {
+    return this.post<CalculationResponse>('/calculator/division', {arguments: args});
+  }
+
+  calculateSquareRoot(args: number[]): Promise<CalculationResponse> {
+    return this.post<CalculationResponse>('/calculator/square-root', {arguments: args});
+  }
+
+  calculateRandomString(args: number[]): Promise<CalculationResponse> {
+    return this.post<CalculationResponse>('/calculator/random-string', {arguments: args});
+  }
+  
   private post<T>(endpoint: string, body: any, headers?: any): Promise<T> {
     const url = `${this.host}${endpoint}`
     const newHeaders = this.includeAccessToken(headers)

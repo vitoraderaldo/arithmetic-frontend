@@ -1,9 +1,14 @@
-import { Button, Container, FormControl, Grid, InputLabel, MenuItem, Select, TextField, Typography } from "@mui/material";
+import { Container, FormControl, Grid, TextField, Typography } from "@mui/material";
 import { LeftMenu } from "../components/left-menu";
 import { Fragment, useEffect, useState } from "react";
-import { Operation, OperationId } from "../types/operations.type";
+import { Operation } from "../types/operations.type";
 import { CalculationInput, CalculationResponse } from "../types/calculation.type";
 import { apiService } from "../api/api.service";
+import { OperationsDropdown } from "../components/operations-dropdown";
+import { OperationResult } from "../components/operation-result";
+import { OperationInputs } from "../components/operation-inputs";
+import { CalculateButton } from "../components/calculate-button";
+import { executeCalculation } from "../util/calculator/handle-calculation";
 
 export const DashboardPage = () => {
 
@@ -38,10 +43,7 @@ export const DashboardPage = () => {
     if (operation?.inputs) {
       const inputs = [];
       for (let i = 1; i <= operation.inputs; i++) {
-        const newInput: CalculationInput = {
-          id: i,
-          value: '',
-        }
+        const newInput: CalculationInput = { id: i, value: ''}
         inputs.push(newInput)
       }
       setInputs(inputs);
@@ -50,116 +52,39 @@ export const DashboardPage = () => {
     }
   }
 
-  const renderMenuItems = () => {
-    return operations.map((operation) => {
-      return (
-        <MenuItem key={operation.id} value={operation.id}>{operation.name}</MenuItem>
-      )
-    })
-  }
-
-  const handleInputChange = (value: string, inputId: number) => { 
+  const onInputChange = (value: string, inputId: number) => { 
     const newInputs = inputs.map((input) => {
       if (input.id === inputId) {
-        return {
-          ...input,
-          value,
-        }
+        return { ...input, value}
       }
       return input;
     })
     setInputs(newInputs);
   }
 
-  const renderInputs = () => {
-    return inputs.map((input) => {
-      return (
-        <Grid key={input.id} item xs={12} sm={6}>
-          <TextField
-            type="text"
-            label={`Input ${input.id}`}
-            variant="outlined"
-            fullWidth
-            value={input.value}
-            onChange={(e) => handleInputChange(e.target.value, input.id)}
-            required
-          />
-        </Grid>
-      )
-    })
-  }
-
-  const renderResult = () => {
-    if (!result?.result) {
-      return null
-    }
-    return (
-      <Grid container spacing={2} style={{marginTop: 50}}>
-        <Grid item xs={12} sm={12}>
-          <TextField
-            label="Result"
-            variant="outlined"
-            fullWidth
-            value={result.result}
-            InputProps={{
-              readOnly: true,
-            }}
-          />
-        </Grid>
-        <Grid item xs={12} sm={12}>
-          <TextField
-            label="Your final balance is"
-            variant="outlined"
-            fullWidth
-            value={result.finalBalance}
-            InputProps={{
-              readOnly: true,
-            }}
-          />
-        </Grid>
-      </Grid>
-    );
-  }
-
   const calculate = async () => {
-    switch (selectedOperationId) {
-      case OperationId.ADDITION:
-        const args = inputs.map((input) => parseInt(input?.value));
-        apiService
-          .calculateAddition(args)
-          .then(setResult)
-        break;
-    }
-  }
-
-  const renderCalculateButton = () => {
-    if (!selectedOperationId) {
-      return null
-    }
-    return (
-      <Grid item xs={12} sm={12} >
-        <Button variant="contained" color="primary" onClick={calculate}>
-          Calculate
-        </Button>
-      </Grid>
-    )
+    const performCalculation = executeCalculation(selectedOperationId, inputs);
+    performCalculation()
+      .then(setResult)
+      .catch(console.error)
   }
 
   return (
     <Fragment>
       <LeftMenu />
       <Container maxWidth="md">
-        <Typography variant="h4" component="h1" align="center" gutterBottom>
-          Arithmetic Calculator
+        <Typography variant="h4" component="h1" align="center" gutterBottom style={{marginTop: 30, marginBottom: 20}}>
+          Calculator
         </Typography>
 
         <Grid container spacing={2}>
           <Grid item xs={8} sm={8}>
             <FormControl variant="outlined" fullWidth>
-              <InputLabel>Operation</InputLabel>
-              <Select value={selectedOperationId || ''} onChange={(e) => onOperationChange(e)} label="Operation">
-                {renderMenuItems()}
-              </Select>
+              <OperationsDropdown 
+                operations={operations} 
+                selectedOperationId={selectedOperationId}
+                onOperationChange={onOperationChange}
+              />
             </FormControl>
           </Grid>
 
@@ -169,18 +94,15 @@ export const DashboardPage = () => {
               variant="standard"
               fullWidth
               value={cost}
-              InputProps={{
-                readOnly: true,
-              }}
+              InputProps={{readOnly: true}}
             />
           </Grid>
 
-          {renderInputs()}
-          
-          {renderCalculateButton()}
+          <OperationInputs inputs={inputs} onInputChange={onInputChange} />
+          <CalculateButton selectedOperationId={selectedOperationId} calculate={calculate} />
         </Grid>
 
-        {renderResult()}
+        <OperationResult result={result} />
       </Container>
     </Fragment>
   );
