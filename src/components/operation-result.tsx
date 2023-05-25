@@ -8,7 +8,7 @@ interface OperationResultProps {
 export const OperationResult = (props: OperationResultProps) => {
   const result = props?.result;
 
-  if (!result?.result) {
+  if (result?.result === undefined || result?.result === null) {
     return null
   }
   
