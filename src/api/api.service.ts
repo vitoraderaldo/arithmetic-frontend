@@ -4,6 +4,7 @@ import { LoginResponse } from "./response.types";
 import { AxiosService } from './axios.service'
 import { FindOperationsResponse } from "../types/operations.type";
 import { getAccessToken } from "../util/auth/is-authenticated";
+import { CalculationResponse } from "../types/calculation.type";
 
 class ApiService {
 
@@ -19,6 +20,10 @@ class ApiService {
 
   getOperations(): Promise<FindOperationsResponse> {
     return this.get<FindOperationsResponse>('/calculator/operations');
+  }
+
+  calculateAddition(args: number[]): Promise<CalculationResponse> {
+    return this.post<CalculationResponse>('/calculator/add', {arguments: args});
   }
 
   private post<T>(endpoint: string, body: any, headers?: any): Promise<T> {

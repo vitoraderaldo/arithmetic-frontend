@@ -8,3 +8,7 @@ export interface Operation {
 export interface FindOperationsResponse {
     operations: Operation[];
 }
+
+export enum OperationId {
+    ADDITION = 1,
+}

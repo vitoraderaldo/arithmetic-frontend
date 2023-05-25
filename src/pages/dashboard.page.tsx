@@ -1,18 +1,18 @@
 import { Button, Container, FormControl, Grid, InputLabel, MenuItem, Select, TextField, Typography } from "@mui/material";
 import { LeftMenu } from "../components/left-menu";
 import { Fragment, useEffect, useState } from "react";
-import { Operation } from "../types/operations.type";
-import { CalculationInput } from "../types/calculation-inputs.type";
+import { Operation, OperationId } from "../types/operations.type";
+import { CalculationInput, CalculationResponse } from "../types/calculation.type";
 import { apiService } from "../api/api.service";
 
 export const DashboardPage = () => {
 
   const [operations, setOperations] = useState([] as Operation[]);
-  const [inputs, setInputs] = useState([] as CalculationInput[]);
+  const [inputs, setInputs] = useState<CalculationInput[]>([]);
 
   const [selectedOperationId, setSelectedOperation] = useState(0);
   const [cost, setCost] = useState(0);
-  const [result, setResult] = useState('');
+  const [result, setResult] = useState<CalculationResponse | null>(null);
 
   useEffect(() => {
 
@@ -23,12 +23,12 @@ export const DashboardPage = () => {
       } catch (error) {
         console.error(error)
       }
-      
     };
     loadOperations();
   }, [])
 
   const onOperationChange = (e: any) => {
+    setResult(null)
     const operationId = e.target.value;
     setSelectedOperation(operationId);
     const operation = operations.find((operation) => operation.id === operationId);
@@ -74,7 +74,7 @@ export const DashboardPage = () => {
   const renderInputs = () => {
     return inputs.map((input) => {
       return (
-        <Grid item xs={12} sm={6}>
+        <Grid key={input.id} item xs={12} sm={6}>
           <TextField
             type="text"
             label={`Input ${input.id}`}
@@ -82,6 +82,7 @@ export const DashboardPage = () => {
             fullWidth
             value={input.value}
             onChange={(e) => handleInputChange(e.target.value, input.id)}
+            required
           />
         </Grid>
       )
@@ -89,7 +90,7 @@ export const DashboardPage = () => {
   }
 
   const renderResult = () => {
-    if (!result) {
+    if (!result?.result) {
       return null
     }
     return (
@@ -99,7 +100,7 @@ export const DashboardPage = () => {
             label="Result"
             variant="outlined"
             fullWidth
-            value={result}
+            value={result.result}
             InputProps={{
               readOnly: true,
             }}
@@ -110,7 +111,7 @@ export const DashboardPage = () => {
             label="Your final balance is"
             variant="outlined"
             fullWidth
-            //value={result}
+            value={result.finalBalance}
             InputProps={{
               readOnly: true,
             }}
@@ -120,13 +121,24 @@ export const DashboardPage = () => {
     );
   }
 
+  const calculate = async () => {
+    switch (selectedOperationId) {
+      case OperationId.ADDITION:
+        const args = inputs.map((input) => parseInt(input?.value));
+        apiService
+          .calculateAddition(args)
+          .then(setResult)
+        break;
+    }
+  }
+
   const renderCalculateButton = () => {
     if (!selectedOperationId) {
       return null
     }
     return (
       <Grid item xs={12} sm={12} >
-        <Button variant="contained" color="primary">
+        <Button variant="contained" color="primary" onClick={calculate}>
           Calculate
         </Button>
       </Grid>
@@ -145,7 +157,7 @@ export const DashboardPage = () => {
           <Grid item xs={8} sm={8}>
             <FormControl variant="outlined" fullWidth>
               <InputLabel>Operation</InputLabel>
-              <Select value={selectedOperationId} onChange={(e) => onOperationChange(e)} label="Operation">
+              <Select value={selectedOperationId || ''} onChange={(e) => onOperationChange(e)} label="Operation">
                 {renderMenuItems()}
               </Select>
             </FormControl>
