@@ -3,7 +3,7 @@ import { LoginRequest } from "./request.types";
 import { LoginResponse } from "./response.types";
 import { AxiosService } from './axios.service'
 import { FindOperationsResponse } from "../types/operations.type";
-import { getAccessToken, logoutUser, onAuthenticationError } from "../util/auth/authentication.util";
+import { getAccessToken, onAuthenticationError } from "../util/auth/authentication.util";
 import { CalculationResponse } from "../types/calculation.type";
 import { ApiErrorInterface } from "./api.error.interface";
 

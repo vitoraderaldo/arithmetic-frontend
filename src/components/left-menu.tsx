@@ -7,9 +7,15 @@ export const LeftMenu = () => {
   const isHome = !!useMatch('/');
   const isRecords = !!useMatch('/records');
   return (
-    <Drawer variant="permanent" anchor="left">
+    <Drawer variant="permanent" anchor="left" PaperProps={{
+      sx: {
+        position: 'static',
+        height: '100vh',
+        width: '100%'
+      }
+    }}>
       <List>
-        <ListItemButton to="/" component={NavLink} selected={isHome} style={{width: 200}}>
+        <ListItemButton to="/" component={NavLink} selected={isHome}>
           <ListItemIcon>
             <HomeIcon />
           </ListItemIcon>

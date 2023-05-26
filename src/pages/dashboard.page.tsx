@@ -1,6 +1,5 @@
 import { Container, FormControl, Grid, TextField, Typography } from "@mui/material";
-import { LeftMenu } from "../components/left-menu";
-import { Fragment, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Operation } from "../types/operations.type";
 import { CalculationInput, CalculationResponse } from "../types/calculation.type";
 import { apiService } from "../api/api.service";
@@ -70,40 +69,37 @@ export const DashboardPage = () => {
   }
 
   return (
-    <Fragment>
-      <LeftMenu />
-      <Container maxWidth="md">
-        <Typography variant="h4" component="h1" align="center" gutterBottom style={{marginTop: 30, marginBottom: 20}}>
-          Calculator
-        </Typography>
+    <Container maxWidth="md">
+      <Typography variant="h4" component="h1" align="center" gutterBottom style={{marginBottom: 20}}>
+        Calculator
+      </Typography>
 
-        <Grid container spacing={2}>
-          <Grid item xs={8} sm={8}>
-            <FormControl variant="outlined" fullWidth>
-              <OperationsDropdown 
-                operations={operations} 
-                selectedOperationId={selectedOperationId}
-                onOperationChange={onOperationChange}
-              />
-            </FormControl>
-          </Grid>
-
-          <Grid item xs={4} sm={4}>
-          <TextField
-              label="Cost"
-              variant="standard"
-              fullWidth
-              value={cost}
-              InputProps={{readOnly: true}}
+      <Grid container spacing={2}>
+        <Grid item xs={8} sm={8}>
+          <FormControl variant="outlined" fullWidth>
+            <OperationsDropdown 
+              operations={operations} 
+              selectedOperationId={selectedOperationId}
+              onOperationChange={onOperationChange}
             />
-          </Grid>
-
-          <OperationInputs inputs={inputs} onInputChange={onInputChange} />
-          <CalculateButton selectedOperationId={selectedOperationId} calculate={calculate} />
+          </FormControl>
         </Grid>
 
-        <OperationResult result={result} />
-      </Container>
-    </Fragment>
+        <Grid item xs={4} sm={4}>
+        <TextField
+            label="Cost"
+            variant="standard"
+            fullWidth
+            value={cost}
+            InputProps={{readOnly: true}}
+          />
+        </Grid>
+
+        <OperationInputs inputs={inputs} onInputChange={onInputChange} />
+        <CalculateButton selectedOperationId={selectedOperationId} calculate={calculate} />
+      </Grid>
+
+      <OperationResult result={result} />
+    </Container>
   );
 }
