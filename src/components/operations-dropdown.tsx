@@ -6,6 +6,7 @@ interface OperationsDropdownProps {
   operations: Operation[];
   selectedOperationId: number | null;
   onOperationChange: (e: any) => void;
+  includeAllOption?: boolean;
 }
 
 const renderOperationOptions = (props: OperationsDropdownProps) => {
@@ -14,12 +15,27 @@ const renderOperationOptions = (props: OperationsDropdownProps) => {
   )
 }
 
+const renderAllOperations = (props: OperationsDropdownProps) => {
+  if (props.includeAllOption) {
+    return (
+      <MenuItem key="clear" value={'0'}>All</MenuItem>
+    )
+  } 
+}
+
 export const OperationsDropdown = (props: OperationsDropdownProps) => {
   const { onOperationChange, selectedOperationId } = props;
   return (
     <Fragment>
       <InputLabel>Operation</InputLabel>
-      <Select value={selectedOperationId || ''} onChange={onOperationChange} label="Operation">
+      <Select 
+        name="operationId" 
+        value={selectedOperationId || '0'} 
+        onChange={onOperationChange} 
+        label="Operation"
+        style={{minWidth: 150}}
+      >
+        {renderAllOperations(props)}
         {renderOperationOptions(props)}
       </Select>
     </Fragment>

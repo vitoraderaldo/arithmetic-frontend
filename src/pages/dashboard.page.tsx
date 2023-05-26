@@ -69,8 +69,8 @@ export const DashboardPage = () => {
   }
 
   return (
-    <Container maxWidth="md">
-      <Typography variant="h4" component="h1" align="center" gutterBottom style={{marginBottom: 20}}>
+    <Container maxWidth="xs">
+      <Typography variant="h4" component="h1" align="center" gutterBottom style={{marginBottom: 30}}>
         Calculator
       </Typography>
 

@@ -24,10 +24,10 @@ const UnauthenticatedRoute: FC<{ component: ComponentType }> = ({ component: Com
 const Page: React.FC<any> = ({ children }) => {
   return (
     <Grid container>
-      <Grid xs={4} sm={3} md={2}>
+      <Grid item xs={4} sm={3} md={2}>
         <LeftMenu />
       </Grid>
-      <Grid xs={8} sm={9} md={10} style={{marginTop: 20}}>
+      <Grid item xs={8} sm={9} md={10} style={{marginTop: 20}}>
         {children}
       </Grid>
     </Grid>

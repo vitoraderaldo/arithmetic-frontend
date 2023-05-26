@@ -13,7 +13,7 @@ export const OperationResult = (props: OperationResultProps) => {
   }
   
   return (
-    <Grid container spacing={2} style={{marginTop: 50}}>
+    <Grid container spacing={2} style={{marginTop: 30}}>
 
       <Grid item xs={12} sm={12}>
          <Typography variant="h5" component="h5" align="left" gutterBottom>
