@@ -1,31 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, TextField, Button, Container, Typography, Grid, FormControl } from '@mui/material';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, TextField, Container, Grid, FormControl, Pagination } from '@mui/material';
 import { OperationsDropdown } from '../components/operations-dropdown';
 import { Operation } from '../types/operations.type';
 import { apiService } from '../api/api.service';
-
-interface Record {
-  id: number;
-  operation: string;
-  amount: number;
-  userBalance: number;
-  operationResponse: string;
-  date: string;
-}
-
-interface FilterOptions {
-  operationId: number;
-  startDate: string;
-  endDate: string;
-}
+import { RecordsSearchResponse } from '../types/records.type';
+import { RecordFilterOptions } from '../api/request.types';
+import moment from 'moment';
 
 export const RecordsPage: React.FC = () => {
   const startDate = new Date();
   startDate.setDate(startDate.getDate() - 7);
 
   const [operations, setOperations] = useState([] as Operation[]);
-  const [records, setRecords] = useState<Record[]>([]);
-  const [filters, setFilters] = useState<FilterOptions>({
+  const [records, setRecords] = useState<RecordsSearchResponse | null>(null);
+  const [filters, setFilters] = useState<RecordFilterOptions>({
     operationId: 0,
     startDate: startDate.toISOString().split('T')[0],
     endDate: new Date().toISOString().split('T')[0]
@@ -40,7 +28,25 @@ export const RecordsPage: React.FC = () => {
   }, [filters, currentPage]);
 
   const fetchRecords = async () => {
-    
+    try {
+      const startDate = moment(filters.startDate)
+      const endDate = moment(filters.endDate).add(1, 'days').toDate();
+      const response = await apiService.searchRecords({
+        filter: {
+          operationId: filters.operationId,
+          startDate: startDate.toISOString(),
+          endDate: endDate.toISOString(),
+        },
+        pagination: {
+          page: currentPage,
+          pageSize: 10,
+        }
+      })
+      setRecords(response);
+      setTotalPages(response.pagination.pageTotal);
+    } catch (error) {
+      console.error(error)
+    }
   };
 
   const fetchOperations = async () => {
@@ -60,21 +66,21 @@ export const RecordsPage: React.FC = () => {
     }));
   };
 
-  const handleFilterSubmit = () => {
-    console.log('filters', filters);
-    setCurrentPage(1);
-  };
+  // const handleFilterSubmit = async () => {
+  //   await fetchRecords()
+  //   setCurrentPage(1);
+  // };
 
-  const handlePageChange = (page: number) => {
+  const handlePageChange = (_: any, page: number) => {
     setCurrentPage(page);
   };
 
+  // const handleFilterSubmit = (event: any) => {
+  //   fetchOperations();
+  // }
+
   return (
       <Container >
-         <Typography variant="h4" component="h1" align="center" gutterBottom style={{marginBottom: 30}}>
-          Records
-        </Typography>
-
         <Grid item xs={12} style={{textAlign: 'right'}}>
           <FormControl variant="outlined" >
             <Grid container spacing={2} alignItems="center">
@@ -108,9 +114,9 @@ export const RecordsPage: React.FC = () => {
                   variant='standard'
                 />
               </Grid>
-              <Grid item>
-                <Button variant="contained" onClick={handleFilterSubmit}>Apply Filters</Button>
-              </Grid>
+              {/* <Grid item>
+                <Button variant="contained" onClick={handleFilterSubmit}>Apply</Button>
+              </Grid> */}
             </Grid>
           </FormControl>
         </Grid>
@@ -127,13 +133,13 @@ export const RecordsPage: React.FC = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {records.map((record) => (
+              {records?.records.map((record) => (
                 <TableRow key={record.id}>
-                  <TableCell>{record.operation}</TableCell>
+                  <TableCell>{record.operationName}</TableCell>
                   <TableCell>{record.amount}</TableCell>
                   <TableCell>{record.userBalance}</TableCell>
                   <TableCell>{record.operationResponse}</TableCell>
-                  <TableCell>{record.date}</TableCell>
+                  <TableCell>{new Date(record.date).toLocaleDateString()} {new Date(record.date).toLocaleTimeString('en-us', {hour12: false})}</TableCell>
                 </TableRow>
               ))}
             </TableBody>
@@ -141,17 +147,20 @@ export const RecordsPage: React.FC = () => {
         </TableContainer>
 
         <div>
-          {Array.from({ length: totalPages }, (_, index) => index + 1).map((page) => (
-            <Button
-              key={page}
-              variant="outlined"
-              //color={page === currentPage ? 'primary' : 'default'}
-              onClick={() => handlePageChange(page)}
-            >
-            {page}
-            </Button>
-            ))}
-          </div>
+          <Pagination
+            count={totalPages}
+            page={currentPage}
+            onChange={handlePageChange}
+            boundaryCount={2}
+            siblingCount={0}
+            color="primary"
+            style={{
+              display: 'flex',
+              justifyContent: 'end',
+              marginTop: 20,
+            }}
+          />
+        </div>
       </Container>
   );
 };

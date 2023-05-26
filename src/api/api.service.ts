@@ -1,11 +1,12 @@
 import { HttpClient } from "./http-client.interface";
-import { LoginRequest } from "./request.types";
+import { LoginRequest, SearchRecordsRequest } from "./request.types";
 import { LoginResponse } from "./response.types";
 import { AxiosService } from './axios.service'
 import { FindOperationsResponse } from "../types/operations.type";
 import { getAccessToken, onAuthenticationError } from "../util/auth/authentication.util";
 import { CalculationResponse } from "../types/calculation.type";
 import { ApiErrorInterface } from "./api.error.interface";
+import { RecordsSearchResponse } from "../types/records.type";
 
 class ApiService {
 
@@ -46,6 +47,11 @@ class ApiService {
 
   calculateRandomString(args: number[]): Promise<CalculationResponse> {
     return this.post<CalculationResponse>('/calculator/random-string', {arguments: args});
+  }
+
+  searchRecords(params: SearchRecordsRequest): Promise<RecordsSearchResponse> {
+    const parameters = new URLSearchParams({...params.filter, ...params.pagination} as any).toString();
+    return this.get<RecordsSearchResponse>(`/records?${parameters}`);
   }
   
   private post<T>(endpoint: string, body: any, headers?: any): Promise<T> {
