@@ -8,6 +8,7 @@ import { OperationResult } from "../components/operation-result";
 import { OperationInputs } from "../components/operation-inputs";
 import { CalculateButton } from "../components/calculate-button";
 import { executeCalculation } from "../util/calculator/handle-calculation";
+import { CostField } from "../components/cost-field";
 
 export const DashboardPage = () => {
 
@@ -15,7 +16,7 @@ export const DashboardPage = () => {
   const [inputs, setInputs] = useState<CalculationInput[]>([]);
 
   const [selectedOperationId, setSelectedOperation] = useState(0);
-  const [cost, setCost] = useState(0);
+  const [cost, setCost] = useState<number>();
   const [result, setResult] = useState<CalculationResponse | null>(null);
 
   useEffect(() => {
@@ -69,37 +70,33 @@ export const DashboardPage = () => {
   }
 
   return (
-    <Container maxWidth="xs">
-      <Typography variant="h4" component="h1" align="center" gutterBottom style={{marginBottom: 30}}>
-        Calculator
-      </Typography>
+    <Container maxWidth="xs" style={{ 
+      padding: 40,
+      border: '1px solid #ccc',
+      borderRadius: '5px',
+    }}>
+  <Typography variant="h4" component="h1" align="center" gutterBottom style={{ marginBottom: '30px', fontWeight: 700 }}>
+    Calculator
+  </Typography>
 
-      <Grid container spacing={2}>
-        <Grid item xs={8} sm={8}>
-          <FormControl variant="outlined" fullWidth>
-            <OperationsDropdown 
-              operations={operations} 
-              selectedOperationId={selectedOperationId}
-              onOperationChange={onOperationChange}
-            />
-          </FormControl>
-        </Grid>
+  <Grid container spacing={2}>
+    <Grid item xs={8} sm={6}>
+      <FormControl variant="outlined" fullWidth>
+        <OperationsDropdown
+          operations={operations}
+          selectedOperationId={selectedOperationId}
+          onOperationChange={onOperationChange}
+        />
+      </FormControl>
+    </Grid>
 
-        <Grid item xs={4} sm={4}>
-        <TextField
-            label="Cost"
-            variant="standard"
-            fullWidth
-            value={cost}
-            InputProps={{readOnly: true}}
-          />
-        </Grid>
+    <CostField cost={cost} />
 
-        <OperationInputs inputs={inputs} onInputChange={onInputChange} />
-        <CalculateButton selectedOperationId={selectedOperationId} calculate={calculate} />
-      </Grid>
+    <OperationInputs inputs={inputs} onInputChange={onInputChange} />
+    <CalculateButton selectedOperationId={selectedOperationId} calculate={calculate} />
+  </Grid>
 
-      <OperationResult result={result} />
-    </Container>
+  <OperationResult result={result} />
+</Container>
   );
 }

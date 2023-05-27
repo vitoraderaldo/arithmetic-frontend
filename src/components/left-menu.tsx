@@ -1,7 +1,7 @@
 import { Drawer, List, ListItemButton, ListItemIcon, ListItemText } from "@mui/material";
-import HomeIcon from '@mui/icons-material/Home';
 import HistoryIcon from '@mui/icons-material/History';
 import { NavLink, useMatch } from "react-router-dom";
+import CalculateIcon from "@mui/icons-material/Calculate";
 
 export const LeftMenu = () => {
   const isHome = !!useMatch('/');
@@ -17,9 +17,9 @@ export const LeftMenu = () => {
       <List>
         <ListItemButton to="/" component={NavLink} selected={isHome}>
           <ListItemIcon>
-            <HomeIcon />
+            <CalculateIcon   />
           </ListItemIcon>
-          <ListItemText primary="Home" />
+          <ListItemText primary="Calculator" />
         </ListItemButton>
         <ListItemButton to="/records" component={NavLink} selected={isRecords}>
           <ListItemIcon>
