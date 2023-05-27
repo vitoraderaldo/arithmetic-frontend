@@ -8,15 +8,13 @@ import { RecordFilterOptions } from '../api/request.types';
 import moment from 'moment';
 
 export const RecordsPage: React.FC = () => {
-  const startDate = new Date();
-  startDate.setDate(startDate.getDate() - 7);
 
   const [operations, setOperations] = useState([] as Operation[]);
   const [records, setRecords] = useState<RecordsSearchResponse | null>(null);
   const [filters, setFilters] = useState<RecordFilterOptions>({
     operationId: 0,
-    startDate: startDate.toISOString().split('T')[0],
-    endDate: new Date().toISOString().split('T')[0]
+    startDate: moment().subtract(1, 'week').format('YYYY-MM-DD'),
+    endDate: moment().format('YYYY-MM-DD'),
   });
 
   const [currentPage, setCurrentPage] = useState(1);
@@ -29,13 +27,11 @@ export const RecordsPage: React.FC = () => {
 
   const fetchRecords = async () => {
     try {
-      const startDate = moment(filters.startDate)
-      const endDate = moment(filters.endDate).add(1, 'days').toDate();
       const response = await apiService.searchRecords({
         filter: {
           operationId: filters.operationId,
-          startDate: startDate.toISOString(),
-          endDate: endDate.toISOString(),
+          startDate: moment(filters.startDate).toISOString(),
+          endDate: moment(filters.endDate).add(1, 'days').toISOString(),
         },
         pagination: {
           page: currentPage,
@@ -135,10 +131,16 @@ export const RecordsPage: React.FC = () => {
             <TableBody>
               {records?.records.map((record) => (
                 <TableRow key={record.id}>
-                  <TableCell>{record.operationName}</TableCell>
-                  <TableCell>{record.amount}</TableCell>
-                  <TableCell>{record.userBalance}</TableCell>
-                  <TableCell>{record.operationResponse}</TableCell>
+                  <TableCell style={{
+                  }}>{record.operationName}</TableCell>
+                  <TableCell>$ {record.amount}</TableCell>
+                  <TableCell>$ {record.userBalance}</TableCell>
+                  <TableCell><span style={{ 
+                    background: 'grey', 
+                    color: '#fff',
+                    padding: '8px 16px',
+                    borderRadius: '4px',
+                  }}>{record.operationResponse}</span></TableCell>
                   <TableCell>{new Date(record.date).toLocaleDateString()} {new Date(record.date).toLocaleTimeString('en-us', {hour12: false})}</TableCell>
                 </TableRow>
               ))}
