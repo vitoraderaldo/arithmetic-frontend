@@ -1,11 +1,27 @@
 import React, { useState, useEffect } from 'react';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, TextField, Container, Grid, FormControl, Pagination } from '@mui/material';
+import { 
+  Table, 
+  TableBody, 
+  TableCell, 
+  TableContainer, 
+  TableHead, 
+  TableRow, 
+  Paper, 
+  TextField, 
+  Container, 
+  Grid, 
+  FormControl, 
+  Pagination, 
+  IconButton, 
+} from '@mui/material';
+import DeleteIcon from '@mui/icons-material/Delete';
 import { OperationsDropdown } from '../components/operations-dropdown';
 import { Operation } from '../types/operations.type';
 import { apiService } from '../api/api.service';
 import { RecordsSearchResponse } from '../types/records.type';
 import { RecordFilterOptions } from '../api/request.types';
 import moment from 'moment';
+import { RecordDeleteDialog } from '../components/record-delete-dialog';
 
 export const RecordsPage: React.FC = () => {
 
@@ -19,6 +35,9 @@ export const RecordsPage: React.FC = () => {
 
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isDeleting, setIsDeleting ] = useState(false);
+  const [recordIdToBeDeleted, setRecordIdToBeDeleted ] = useState('');
 
   useEffect(() => {
     fetchRecords();
@@ -60,20 +79,36 @@ export const RecordsPage: React.FC = () => {
       ...prevFilters,
       [name]: value
     }));
+    if (name === "operationId") {
+      setCurrentPage(1);
+    }
   };
-
-  // const handleFilterSubmit = async () => {
-  //   await fetchRecords()
-  //   setCurrentPage(1);
-  // };
 
   const handlePageChange = (_: any, page: number) => {
     setCurrentPage(page);
   };
 
-  // const handleFilterSubmit = (event: any) => {
-  //   fetchOperations();
-  // }
+  const handleDelete = (recordId: string) => {
+    setRecordIdToBeDeleted(recordId);
+    setIsDeleting(false)
+    setIsDeleteModalOpen(true);
+  };
+  
+  const handleConfirmDelete = async () => {
+    setIsDeleting(true)
+    try {
+      await apiService.deleteRecord(recordIdToBeDeleted);
+    } catch (err) {
+      console.error(err);
+    }
+    setRecordIdToBeDeleted('');
+    setIsDeleteModalOpen(false);
+    fetchRecords();
+  };
+  
+  const handleCancelDelete = () => {
+    setIsDeleteModalOpen(false);
+  };
 
   return (
       <Container >
@@ -110,9 +145,6 @@ export const RecordsPage: React.FC = () => {
                   variant='standard'
                 />
               </Grid>
-              {/* <Grid item>
-                <Button variant="contained" onClick={handleFilterSubmit}>Apply</Button>
-              </Grid> */}
             </Grid>
           </FormControl>
         </Grid>
@@ -126,6 +158,7 @@ export const RecordsPage: React.FC = () => {
                 <TableCell>Balance</TableCell>
                 <TableCell>Operation Response</TableCell>
                 <TableCell>Date</TableCell>
+                <TableCell>Actions</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -142,10 +175,22 @@ export const RecordsPage: React.FC = () => {
                     borderRadius: '4px',
                   }}>{record.operationResponse}</span></TableCell>
                   <TableCell>{new Date(record.date).toLocaleDateString()} {new Date(record.date).toLocaleTimeString('en-us', {hour12: false})}</TableCell>
+                  <TableCell>
+                    <IconButton style={{ padding: 0 }} onClick={() => handleDelete(record.id)} >
+                      <DeleteIcon />
+                    </IconButton>
+                  </TableCell> 
                 </TableRow>
               ))}
             </TableBody>
           </Table>
+
+          <RecordDeleteDialog 
+            isOpened={isDeleteModalOpen}
+            isDeleting={isDeleting}
+            onCancel={handleCancelDelete}
+            onConfirmation={handleConfirmDelete}
+          />
         </TableContainer>
 
         <div>

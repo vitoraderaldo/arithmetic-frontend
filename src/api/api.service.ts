@@ -53,6 +53,10 @@ class ApiService {
     const parameters = new URLSearchParams({...params.filter, ...params.pagination} as any).toString();
     return this.get<RecordsSearchResponse>(`/records?${parameters}`);
   }
+
+  deleteRecord(id: string): Promise<void> {
+    return this.delete<void>(`/records/${id}`);
+  }
   
   private post<T>(endpoint: string, body: any, headers?: any): Promise<T> {
     const url = `${this.host}${endpoint}`
@@ -74,6 +78,20 @@ class ApiService {
     const newHeaders = this.includeAccessToken(headers)
     return this.httpClient
       .get<T>(url, newHeaders)
+      .catch((error: Error) => {
+        throw this.httpClient.prettifyError(error)
+      })
+      .catch((error: ApiErrorInterface) => {
+        this.onError(error)
+        throw error
+      })
+  }
+
+  private delete<T>(endpoint: string, headers?: any): Promise<T> {
+    const url = `${this.host}${endpoint}`
+    const newHeaders = this.includeAccessToken(headers)
+    return this.httpClient
+      .delete<T>(url, newHeaders)
       .catch((error: Error) => {
         throw this.httpClient.prettifyError(error)
       })

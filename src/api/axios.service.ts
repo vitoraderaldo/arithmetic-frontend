@@ -18,6 +18,13 @@ export class AxiosService  implements HttpClient {
     return response.data
   }
 
+  async delete<T>(url: string, headers?: any): Promise<T> {
+    const response = await axios.delete(url, {
+      headers
+    })
+    return response.data
+  }
+
   prettifyError(exception: AxiosError): ApiErrorInterface {
     const apiError = exception.response?.data as ApiErrorInterface
 
