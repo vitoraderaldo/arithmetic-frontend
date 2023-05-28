@@ -36,7 +36,7 @@ export const OperationResult = (props: OperationResultProps) => {
           label="Your final balance is"
           variant="outlined"
           fullWidth
-          value={result.finalBalance}
+          value={`$ ${result.finalBalance}`}
           InputProps={{readOnly: true}}
         />
       </Grid>
