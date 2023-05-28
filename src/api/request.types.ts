@@ -17,6 +17,10 @@ export interface RecordPagination {
 }
 
 export interface SearchRecordsRequest {
+  sort: {
+    sortBy: string;
+    sortDirection: 'asc' | 'desc';
+  }
   filter: RecordFilterOptions
   pagination: {
     page: number;

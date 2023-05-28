@@ -12,7 +12,8 @@ import {
   Grid, 
   FormControl, 
   Pagination, 
-  IconButton, 
+  IconButton,
+  TableSortLabel, 
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { OperationsDropdown } from '../components/operations-dropdown';
@@ -32,6 +33,10 @@ export const RecordsPage: React.FC = () => {
     startDate: moment().subtract(1, 'week').format('YYYY-MM-DD'),
     endDate: moment().format('YYYY-MM-DD'),
   });
+  const [sortConfig, setSortConfig] = useState<{
+    key: string;
+    direction: 'asc' | 'desc';
+  }>({key: 'dateCreated', direction: 'desc'});
 
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
@@ -41,8 +46,11 @@ export const RecordsPage: React.FC = () => {
 
   useEffect(() => {
     fetchRecords();
+  }, [filters, currentPage, sortConfig]);
+
+  useEffect(() => {
     fetchOperations();
-  }, [filters, currentPage]);
+  }, []);
 
   const fetchRecords = async () => {
     try {
@@ -55,6 +63,10 @@ export const RecordsPage: React.FC = () => {
         pagination: {
           page: currentPage,
           pageSize: 10,
+        },
+        sort: {
+          sortBy: sortConfig.key,
+          sortDirection: sortConfig.direction,
         }
       })
       setRecords(response);
@@ -72,6 +84,14 @@ export const RecordsPage: React.FC = () => {
       console.error(error)
     }
   }
+
+  const handleSortClick = (columnKey: string) => {
+    if (sortConfig.key === columnKey && sortConfig.direction === 'asc') {
+      setSortConfig({ key: columnKey, direction: 'desc' });
+    } else {
+      setSortConfig({ key: columnKey, direction: 'asc' });
+    }
+  };
 
   const handleFilterChange = (event: any) => {
     const { name, value } = event.target;
@@ -110,6 +130,17 @@ export const RecordsPage: React.FC = () => {
     setIsDeleteModalOpen(false);
   };
 
+  const tableSortRender = (key: string, name: string) => {
+    return (
+      <TableSortLabel 
+        active={sortConfig.key === key}
+        onClick={() => handleSortClick(key)}
+        direction={sortConfig.key === key ? sortConfig.direction : undefined}
+      >
+        {name}
+      </TableSortLabel>
+    )
+  }
   return (
       <Container >
         <Grid item xs={12} style={{textAlign: 'right'}}>
@@ -153,11 +184,11 @@ export const RecordsPage: React.FC = () => {
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell>Operation</TableCell>
-                <TableCell>Amount</TableCell>
-                <TableCell>Balance</TableCell>
-                <TableCell>Operation Response</TableCell>
-                <TableCell>Date</TableCell>
+                <TableCell>{tableSortRender('operationId', 'Operation')}</TableCell>
+                <TableCell>{tableSortRender('amount', 'Amount')}</TableCell>
+                <TableCell>{tableSortRender('userBalance', 'Balance')}</TableCell>
+                <TableCell>{tableSortRender('operationResponse', 'Operation Response')}</TableCell>
+                <TableCell>{tableSortRender('dateCreated', 'Date')}</TableCell>
                 <TableCell>Actions</TableCell>
               </TableRow>
             </TableHead>

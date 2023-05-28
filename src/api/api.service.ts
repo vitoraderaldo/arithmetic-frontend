@@ -50,7 +50,7 @@ class ApiService {
   }
 
   searchRecords(params: SearchRecordsRequest): Promise<RecordsSearchResponse> {
-    const parameters = new URLSearchParams({...params.filter, ...params.pagination} as any).toString();
+    const parameters = new URLSearchParams({...params.filter, ...params.pagination, ...params.sort} as any).toString();
     return this.get<RecordsSearchResponse>(`/records?${parameters}`);
   }
 
