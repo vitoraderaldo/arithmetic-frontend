@@ -1,3 +1,4 @@
+import React from 'react';
 import { InputLabel, MenuItem, Select } from "@mui/material"
 import { Operation } from "../types/operations.type"
 import { Fragment } from "react"

@@ -1,3 +1,4 @@
+import React from 'react';
 import { Grid, TextField, Typography } from "@mui/material";
 import { CalculationResponse } from "../types/calculation.type";
 
