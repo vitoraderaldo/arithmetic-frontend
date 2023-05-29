@@ -28,9 +28,9 @@ export class AxiosService  implements HttpClient {
   prettifyError(exception: AxiosError): ApiErrorInterface {
     const apiError = exception.response?.data as ApiErrorInterface
 
-    const error = apiError.error || 'Unknown Error'
-    const message = apiError.message || 'An error occurred'
-    const statusCode = apiError.statusCode || exception.response?.status || 500
+    const error = apiError?.error || 'Unknown Error'
+    const message = apiError?.message || 'An error occurred. Please try again later.'
+    const statusCode = apiError?.statusCode || exception.response?.status || 500
 
     return {
       error,

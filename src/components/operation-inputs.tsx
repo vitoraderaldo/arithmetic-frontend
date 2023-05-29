@@ -14,7 +14,7 @@ export const OperationInputs = (props: OperationInputsProps) => {
       <Grid key={input.id} item xs={12} sm={6}>
         <TextField
           type="text"
-          label={`Input ${input.id}`}
+          label={`Argument ${input.id}`}
           variant="outlined"
           fullWidth
           value={input.value}

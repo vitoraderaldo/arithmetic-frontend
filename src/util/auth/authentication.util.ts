@@ -23,7 +23,7 @@ export const logoutUser = (): void => {
 }
 
 export const onAuthenticationError = (error: ApiErrorInterface) => {
-  if (error.statusCode === 403) {
+  if (error?.statusCode === 403) {
     logoutUser()
   }
 }

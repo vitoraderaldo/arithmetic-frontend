@@ -1,7 +1,8 @@
-import { Button, Grid } from "@mui/material"
+import { Button, CircularProgress, Grid } from "@mui/material"
 
 interface OperationInputsProps {
   selectedOperationId: number
+  isCalculating: boolean
   calculate: () => void
 }
 
@@ -13,7 +14,7 @@ export const CalculateButton = (props: OperationInputsProps) => {
   return (
     <Grid item xs={12} sm={12} >
       <Button variant="contained" color="primary" onClick={props.calculate}>
-        Calculate
+        {props.isCalculating ? <CircularProgress size={24} color="inherit" /> : 'Calculate'}
       </Button>
     </Grid>
   )

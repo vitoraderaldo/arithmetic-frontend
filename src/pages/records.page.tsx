@@ -13,7 +13,9 @@ import {
   FormControl, 
   Pagination, 
   IconButton,
-  TableSortLabel, 
+  TableSortLabel,
+  CircularProgress,
+  Alert, 
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { OperationsDropdown } from '../components/operations-dropdown';
@@ -23,6 +25,7 @@ import { RecordsSearchResponse } from '../types/records.type';
 import { RecordFilterOptions } from '../api/request.types';
 import moment from 'moment';
 import { RecordDeleteDialog } from '../components/record-delete-dialog';
+import { ApiErrorInterface } from '../api/api.error.interface';
 
 export const RecordsPage: React.FC = () => {
 
@@ -37,12 +40,14 @@ export const RecordsPage: React.FC = () => {
     key: string;
     direction: 'asc' | 'desc';
   }>({key: 'dateCreated', direction: 'desc'});
+  const [isFetchingRecords, setIsFetchingRecords] = useState(false);
 
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isDeleting, setIsDeleting ] = useState(false);
   const [recordIdToBeDeleted, setRecordIdToBeDeleted ] = useState('');
+  const [fetchingError, setFetchingError] = useState('');
 
   useEffect(() => {
     fetchRecords();
@@ -53,8 +58,9 @@ export const RecordsPage: React.FC = () => {
   }, []);
 
   const fetchRecords = async () => {
-    try {
-      const response = await apiService.searchRecords({
+    setRecords(null);
+    setIsFetchingRecords(true);
+    apiService.searchRecords({
         filter: {
           operationId: filters.operationId,
           startDate: moment(filters.startDate).toISOString(),
@@ -68,13 +74,18 @@ export const RecordsPage: React.FC = () => {
           sortBy: sortConfig.key,
           sortDirection: sortConfig.direction,
         }
-      })
-      setRecords(response);
-      setTotalPages(response.pagination.pageTotal);
-    } catch (error) {
-      console.error(error)
-    }
-  };
+    })
+    .then((records) => {
+      setRecords(records);
+      setTotalPages(records.pagination.pageTotal);
+    })
+    .catch((error: ApiErrorInterface) => {
+      setFetchingError(error?.message);
+    }) 
+    .finally(() => {
+      setIsFetchingRecords(false);
+    })
+  }
 
   const fetchOperations = async () => {
     try {
@@ -141,8 +152,9 @@ export const RecordsPage: React.FC = () => {
       </TableSortLabel>
     )
   }
+
   return (
-      <Container >
+      <Container>
         <Grid item xs={12} style={{textAlign: 'right'}}>
           <FormControl variant="outlined" >
             <Grid container spacing={2} alignItems="center">
@@ -223,6 +235,19 @@ export const RecordsPage: React.FC = () => {
             onConfirmation={handleConfirmDelete}
           />
         </TableContainer>
+
+        {isFetchingRecords ? (
+          <div style={{ display: 'flex', justifyContent: 'center', marginTop: 20 }}>
+            <CircularProgress />
+          </div>
+          ) : null
+        }
+
+        {fetchingError ? (
+          <Alert severity="error" style={{ margin: '20px auto', maxWidth: '500px' }}>
+            Error: {fetchingError}
+          </Alert>
+        ) : null }
 
         <div>
           <Pagination

@@ -1,4 +1,4 @@
-import { Container, FormControl, Grid, TextField, Typography } from "@mui/material";
+import { Container, FormControl, Grid, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import { Operation } from "../types/operations.type";
 import { CalculationInput, CalculationResponse } from "../types/calculation.type";
@@ -9,6 +9,7 @@ import { OperationInputs } from "../components/operation-inputs";
 import { CalculateButton } from "../components/calculate-button";
 import { executeCalculation } from "../util/calculator/handle-calculation";
 import { CostField } from "../components/cost-field";
+import { ApiErrorInterface } from "../api/api.error.interface";
 
 export const DashboardPage = () => {
 
@@ -18,6 +19,8 @@ export const DashboardPage = () => {
   const [selectedOperationId, setSelectedOperation] = useState(0);
   const [cost, setCost] = useState<number>();
   const [result, setResult] = useState<CalculationResponse | null>(null);
+  const [isCalculating, setIsCalculating ] = useState(false);
+  const [error, setError] = useState<string>("");
 
   useEffect(() => {
 
@@ -63,10 +66,14 @@ export const DashboardPage = () => {
   }
 
   const calculate = async () => {
+    setError("");
+    setResult(null);
+    setIsCalculating(true);
     const performCalculation = executeCalculation(selectedOperationId, inputs);
     performCalculation()
       .then(setResult)
-      .catch(console.error)
+      .catch((error: ApiErrorInterface) => setError(error.message))
+      .finally(() => setIsCalculating(false))
   }
 
   return (
@@ -93,7 +100,18 @@ export const DashboardPage = () => {
     <CostField cost={cost} />
 
     <OperationInputs inputs={inputs} onInputChange={onInputChange} />
-    <CalculateButton selectedOperationId={selectedOperationId} calculate={calculate} />
+    <Grid style={{width: '100%', marginTop: 20}}>
+      {error && (
+        <Typography color="error" align="center" gutterBottom>
+          {error}
+        </Typography>
+      )}
+    </Grid>
+    <CalculateButton 
+      selectedOperationId={selectedOperationId} 
+      calculate={calculate} 
+      isCalculating={isCalculating}
+    />
   </Grid>
 
   <OperationResult result={result} />
