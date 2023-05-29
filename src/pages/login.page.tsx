@@ -9,6 +9,7 @@ import {
 } from '@mui/material';
 import { apiService } from '../api/api.service';
 import { useNavigate } from 'react-router-dom';
+import { ApiErrorInterface } from '../api/api.error.interface';
 
 export const LoginPage = () => {
   const [email, setEmail] = useState('');
@@ -19,16 +20,24 @@ export const LoginPage = () => {
   const localStorage = window.localStorage;
 
   const handleLogin = async () => {
-    try {
-      setIsLoading(true);
-      setErrorMessage('');
-      const response = await apiService.login({ email, password })
-      localStorage.setItem('authentication', JSON.stringify(response));
-      navigator('/');
-    } catch (err) {
-      setErrorMessage('Invalid email or password');
-    } finally {
-      setIsLoading(false);
+    setIsLoading(true);
+    setErrorMessage('');
+    apiService.login({ email, password })
+      .then(response => {
+        localStorage.setItem('authentication', JSON.stringify(response))
+        navigator('/');
+      })
+      .catch((err: ApiErrorInterface) => {
+        setErrorMessage(err.message);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      })
+  };
+
+  const handleKeyPress = (event: any) => {
+    if (event.key === 'Enter') {
+      handleLogin();
     }
   };
 
@@ -59,6 +68,7 @@ export const LoginPage = () => {
           variant="outlined"
           type="password"
           value={password}
+          onKeyPress={handleKeyPress}
           onChange={(e) => setPassword(e.target.value)}
           fullWidth
           margin="normal"

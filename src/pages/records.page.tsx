@@ -64,7 +64,7 @@ export const RecordsPage: React.FC = () => {
         filter: {
           operationId: filters.operationId,
           startDate: moment(filters.startDate).toISOString(),
-          endDate: moment(filters.endDate).add(1, 'days').toISOString(),
+          endDate: moment(filters.endDate).add(1, 'days').subtract(1, 'milliseconds').toISOString(),
         },
         pagination: {
           page: currentPage,
