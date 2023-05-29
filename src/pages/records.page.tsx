@@ -60,6 +60,7 @@ export const RecordsPage: React.FC = () => {
   const fetchRecords = async () => {
     setRecords(null);
     setIsFetchingRecords(true);
+    setFetchingError('')
     apiService.searchRecords({
         filter: {
           operationId: filters.operationId,
