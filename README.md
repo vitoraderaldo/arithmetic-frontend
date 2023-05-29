@@ -11,8 +11,8 @@ The following technologies are employed in this project:
 3. Material: Javascript library used for providing components.
 
 ## Running the service
-Before running this service, first, run the backend application as specified here [arithmetic-backend](https://github.com/vitoraderaldo/arithmetic-backend).
-Then run these commands below:
+Ensure that you have already executed the backend application as outlined in [arithmetic-backend](https://github.com/vitoraderaldo/arithmetic-backend).
+Afterwards, proceed with running the following commands:
 ```bash
 $ npm run start
 ```
