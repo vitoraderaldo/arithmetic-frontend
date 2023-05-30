@@ -32,7 +32,7 @@ $ npm run test:e2e
 ## Deployment
 To deploy the app in staging just run:
 ```bash
-sh npm run deploy:staging
+$ npm run deploy:staging
 ```
 
 Please note that you won't be able to execute this command because you don't have the correct AWS Profile.
