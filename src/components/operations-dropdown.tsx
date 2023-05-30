@@ -12,7 +12,7 @@ interface OperationsDropdownProps {
 
 const renderOperationOptions = (props: OperationsDropdownProps) => {
   return props.operations.map(operation => 
-    <MenuItem key={operation.id} value={operation.id}>{operation.name}</MenuItem>
+    <MenuItem id={`operation-${operation.id}`} key={operation.id} value={operation.id}>{operation.name}</MenuItem>
   )
 }
 
@@ -30,6 +30,7 @@ export const OperationsDropdown = (props: OperationsDropdownProps) => {
     <Fragment>
       <InputLabel>Operation</InputLabel>
       <Select 
+        id="operation-selector"
         name="operationId" 
         value={selectedOperationId || '0'} 
         onChange={onOperationChange} 

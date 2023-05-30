@@ -57,6 +57,7 @@ export const LoginPage = () => {
           Login
         </Typography>
         <TextField
+          id="email-input"
           label="Email"
           variant="outlined"
           value={email}
@@ -65,6 +66,7 @@ export const LoginPage = () => {
           margin="normal"
         />
         <TextField
+          id="password-input"
           label="Password"
           variant="outlined"
           type="password"
@@ -80,6 +82,7 @@ export const LoginPage = () => {
           </Typography>
         )}
         <Button
+          id="login-button"
           variant="contained"
           color="primary"
           onClick={handleLogin}

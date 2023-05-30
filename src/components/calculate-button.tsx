@@ -14,7 +14,7 @@ export const CalculateButton = (props: OperationInputsProps) => {
 
   return (
     <Grid item xs={12} sm={12} >
-      <Button variant="contained" color="primary" onClick={props.calculate}>
+      <Button id="calculate-button" variant="contained" color="primary" onClick={props.calculate}>
         {props.isCalculating ? <CircularProgress size={24} color="inherit" /> : 'Calculate'}
       </Button>
     </Grid>

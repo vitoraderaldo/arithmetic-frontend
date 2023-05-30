@@ -12,6 +12,7 @@ export const CostField = (props: CostFieldProps) => {
   return (
     <Grid item xs={4} sm={4}>
       <TextField
+        id="cost"
         label="Cost"
         variant="outlined"
         fullWidth

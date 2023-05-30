@@ -14,6 +14,7 @@ export const OperationInputs = (props: OperationInputsProps) => {
     return (
       <Grid key={input.id} item xs={12} sm={6}>
         <TextField
+          id={`argument-input-${input.id}`}
           type="text"
           label={`Argument ${input.id}`}
           variant="outlined"

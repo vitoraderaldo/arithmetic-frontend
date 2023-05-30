@@ -24,6 +24,7 @@ export const OperationResult = (props: OperationResultProps) => {
 
       <Grid item xs={6} sm={6}>
         <TextField
+          id="operation-result"
           label="Result"
           variant="outlined"
           fullWidth
@@ -34,6 +35,7 @@ export const OperationResult = (props: OperationResultProps) => {
 
       <Grid item xs={6} sm={6}>
         <TextField
+          id="final-balance"
           label="Your final balance is"
           variant="outlined"
           fullWidth

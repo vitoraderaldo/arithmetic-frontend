@@ -26,7 +26,7 @@ export const LogoutDialog = (props: LogoutDialogProps) => {
         <Button onClick={onCancel} color="primary">
           Cancel
         </Button>
-        <Button onClick={logoutUser} color="primary">
+        <Button id="confirm-logout-button" onClick={logoutUser} color="primary">
           Logout
         </Button>
       </DialogActions>

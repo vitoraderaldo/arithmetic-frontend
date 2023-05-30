@@ -25,13 +25,13 @@ export const LeftMenu = () => {
 
         <Box height="100%" display="flex" flexDirection="column" justifyContent="space-between">
           <List>
-            <ListItemButton to="/" component={NavLink} selected={isHome}>
+            <ListItemButton id="left-menu-home" to="/" component={NavLink} selected={isHome}>
               <ListItemIcon>
                 <CalculateIcon   />
               </ListItemIcon>
               <ListItemText primary="Calculator" />
             </ListItemButton>
-            <ListItemButton to="/records" component={NavLink} selected={isRecords}>
+            <ListItemButton id="left-menu-records" to="/records" component={NavLink} selected={isRecords}>
               <ListItemIcon>
                 <HistoryIcon />
               </ListItemIcon>
@@ -39,7 +39,7 @@ export const LeftMenu = () => {
             </ListItemButton>
           </List>
           <List style={{borderTop: '1px solid #0000001F'}}>
-            <ListItemButton onClick={() => setShowLogout(true)} >
+            <ListItemButton id="left-menu-logout" onClick={() => setShowLogout(true)} >
               <ListItemIcon>
                 <LogoutIcon />
               </ListItemIcon>
