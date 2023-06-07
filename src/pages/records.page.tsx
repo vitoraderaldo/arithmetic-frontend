@@ -51,6 +51,7 @@ export const RecordsPage: React.FC = () => {
 
   useEffect(() => {
     fetchRecords();
+    // eslint-disable-next-line
   }, [filters, currentPage, sortConfig]);
 
   useEffect(() => {
