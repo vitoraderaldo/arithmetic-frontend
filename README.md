@@ -14,6 +14,7 @@ The following technologies are employed in this project:
 2. Axios: Javascript library used for HTTP communication.
 3. Material: Javascript library used for providing components.
 4. Cypress: Frontend testing tool.
+5. GitHub Actions: Allows to create pipelines to deploy the application on production.
 
 ## Running the service
 Ensure that you have already executed the backend application as outlined in [arithmetic-backend](https://github.com/vitoraderaldo/arithmetic-backend).
@@ -30,10 +31,4 @@ $ npm run test:e2e
 ```
 
 ## Deployment
-To deploy the app in staging just run:
-```bash
-$ npm run deploy:staging
-```
-
-Please note that you won't be able to execute this command because you don't have the correct AWS Profile.
-
+The deployment to staging will happen for every new commit on the develop branch.
