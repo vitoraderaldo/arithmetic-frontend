@@ -33,7 +33,6 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "build:staging": "env-cmd -f .env.staging react-scripts build",
-    "deploy:staging": "npm run build:staging && aws s3 sync build/ s3://arithmetic-frontend-staging",
     "test:e2e": "cypress run",
     "eject": "react-scripts eject",
     "cypress:open": "cypress open"
