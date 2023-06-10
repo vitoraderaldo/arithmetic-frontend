@@ -7,10 +7,10 @@ export const isAuthenticated = (): boolean => {
   return !!authentication;
 }
 
-export const getAccessToken = (): string => {
+export const getIdToken = (): string => {
   const authentication = localStorage.getItem('authentication');
   const parsedAuthentication = JSON.parse(authentication || '{}');
-  return parsedAuthentication.accessToken;
+  return parsedAuthentication.idToken;
 }
 
 export const deleteAuthentication = (): void => {
