@@ -3,7 +3,7 @@ import { LoginRequest, SearchRecordsRequest } from "./request.types";
 import { LoginResponse } from "./response.types";
 import { AxiosService } from './axios.service'
 import { FindOperationsResponse } from "../types/operations.type";
-import { getAccessToken, onAuthenticationError } from "../util/auth/authentication.util";
+import { getIdToken, onAuthenticationError } from "../util/auth/authentication.util";
 import { CalculationResponse } from "../types/calculation.type";
 import { ApiErrorInterface } from "./api.error.interface";
 import { RecordsSearchResponse } from "../types/records.type";
@@ -18,49 +18,49 @@ class ApiService {
   private host = process.env.REACT_APP_API_URL
 
   login(body: LoginRequest): Promise<LoginResponse> {
-    return this.post<LoginResponse>('/user/login', body);
+    return this.post<LoginResponse>('/api/auth/login', body);
   }
 
   getOperations(): Promise<FindOperationsResponse> {
-    return this.get<FindOperationsResponse>('/calculator/operations');
+    return this.get<FindOperationsResponse>('/api/arithmetic/calculator/operations');
   }
 
   calculateAddition(args: number[]): Promise<CalculationResponse> {
-    return this.post<CalculationResponse>('/calculator/addition', {arguments: args});
+    return this.post<CalculationResponse>('/api/arithmetic/calculator/addition', {arguments: args});
   }
 
   calculateSubtraction(args: number[]): Promise<CalculationResponse> {
-    return this.post<CalculationResponse>('/calculator/subtraction', {arguments: args});
+    return this.post<CalculationResponse>('/api/arithmetic/calculator/subtraction', {arguments: args});
   }
 
   calculateMultiplication(args: number[]): Promise<CalculationResponse> {
-    return this.post<CalculationResponse>('/calculator/multiplication', {arguments: args});
+    return this.post<CalculationResponse>('/api/arithmetic/calculator/multiplication', {arguments: args});
   }
 
   calculateDivision(args: number[]): Promise<CalculationResponse> {
-    return this.post<CalculationResponse>('/calculator/division', {arguments: args});
+    return this.post<CalculationResponse>('/api/arithmetic/calculator/division', {arguments: args});
   }
 
   calculateSquareRoot(args: number[]): Promise<CalculationResponse> {
-    return this.post<CalculationResponse>('/calculator/square-root', {arguments: args});
+    return this.post<CalculationResponse>('/api/arithmetic/calculator/square-root', {arguments: args});
   }
 
   calculateRandomString(args: number[]): Promise<CalculationResponse> {
-    return this.post<CalculationResponse>('/calculator/random-string', {arguments: args});
+    return this.post<CalculationResponse>('/api/arithmetic/calculator/random-string', {arguments: args});
   }
 
   searchRecords(params: SearchRecordsRequest): Promise<RecordsSearchResponse> {
     const parameters = new URLSearchParams({...params.filter, ...params.pagination, ...params.sort} as any).toString();
-    return this.get<RecordsSearchResponse>(`/records?${parameters}`);
+    return this.get<RecordsSearchResponse>(`/api/arithmetic/records?${parameters}`);
   }
 
   deleteRecord(id: string): Promise<void> {
-    return this.delete<void>(`/records/${id}`);
+    return this.delete<void>(`/api/arithmetic/records/${id}`);
   }
   
   private post<T>(endpoint: string, body: any, headers?: any): Promise<T> {
     const url = `${this.host}${endpoint}`
-    const newHeaders = this.includeAccessToken(headers)
+    const newHeaders = this.includeAuthorization(headers)
     return this
       .httpClient
       .post<T>(url, body, newHeaders)
@@ -75,7 +75,7 @@ class ApiService {
 
   private get<T>(endpoint: string, headers?: any): Promise<T> {
     const url = `${this.host}${endpoint}`
-    const newHeaders = this.includeAccessToken(headers)
+    const newHeaders = this.includeAuthorization(headers)
     return this.httpClient
       .get<T>(url, newHeaders)
       .catch((error: Error) => {
@@ -89,7 +89,7 @@ class ApiService {
 
   private delete<T>(endpoint: string, headers?: any): Promise<T> {
     const url = `${this.host}${endpoint}`
-    const newHeaders = this.includeAccessToken(headers)
+    const newHeaders = this.includeAuthorization(headers)
     return this.httpClient
       .delete<T>(url, newHeaders)
       .catch((error: Error) => {
@@ -101,11 +101,11 @@ class ApiService {
       })
   }
 
-  private includeAccessToken(headers?: any): any {
-    const accessToken = getAccessToken()
+  private includeAuthorization(headers?: any): any {
+    const idToken = getIdToken()
     return {
       ...headers,
-      accessToken: accessToken
+      Authorization: `Bearer ${idToken}`
     }
   }
 
