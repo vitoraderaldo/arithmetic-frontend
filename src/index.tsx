@@ -9,6 +9,7 @@ import '@fontsource/roboto/700.css';
 import { AppRouter } from './routes/root';
 
 import './index.css'
+import './external-scripts/apm/apm'
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
