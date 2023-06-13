@@ -11,8 +11,9 @@ import { CalculateButton } from "../components/calculate-button";
 import { executeCalculation } from "../util/calculator/handle-calculation";
 import { CostField } from "../components/cost-field";
 import { ApiErrorInterface } from "../api/api.error.interface";
+import { withTransaction } from '@elastic/apm-rum-react';
 
-export const DashboardPage = () => {
+const DashboardPage = () => {
 
   const [operations, setOperations] = useState([] as Operation[]);
   const [inputs, setInputs] = useState<CalculationInput[]>([]);
@@ -119,3 +120,5 @@ export const DashboardPage = () => {
 </Container>
   );
 }
+
+export default withTransaction('DashboardPage', 'Component')(DashboardPage);

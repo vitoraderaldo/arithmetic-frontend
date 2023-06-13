@@ -11,6 +11,7 @@ import {
 import { apiService } from '../api/api.service';
 import { useNavigate } from 'react-router-dom';
 import { ApiErrorInterface } from '../api/api.error.interface';
+import { withTransaction } from '@elastic/apm-rum-react';
 
 export const LoginPage = () => {
   const [email, setEmail] = useState('');
@@ -96,4 +97,4 @@ export const LoginPage = () => {
   );
 };
 
-export default LoginPage;
+export default withTransaction('LoginPage', 'Component')(LoginPage);

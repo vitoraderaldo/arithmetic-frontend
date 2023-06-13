@@ -26,8 +26,9 @@ import { RecordFilterOptions } from '../api/request.types';
 import moment from 'moment';
 import { RecordDeleteDialog } from '../components/record-delete-dialog';
 import { ApiErrorInterface } from '../api/api.error.interface';
+import { withTransaction } from '@elastic/apm-rum-react';
 
-export const RecordsPage: React.FC = () => {
+const RecordsPage: React.FC = () => {
 
   const [operations, setOperations] = useState([] as Operation[]);
   const [records, setRecords] = useState<RecordsSearchResponse | null>(null);
@@ -269,3 +270,6 @@ export const RecordsPage: React.FC = () => {
       </Container>
   );
 };
+
+export default withTransaction('RecordsPage', 'component')(RecordsPage);
+
