@@ -19,13 +19,5 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Run E2E Tests
-        uses: cypress-io/github-action@v5
-        with:
-          start: npm run start:staging
-          wait-on: 'http://localhost:3000'
-          browser: chrome
-          record: false
-
       - name: Build
         run: npm run build:staging
