@@ -2,7 +2,7 @@ import React from 'react';
 import { FC, ComponentType } from 'react';
 import { Grid } from '@mui/material';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { LoginPage } from '../pages/login.page';
+import LoginPage from '../pages/login.page';
 import DashboardPage from '../pages/dashboard.page';
 import { isAuthenticated } from '../util/auth/authentication.util';
 import RecordsPage from '../pages/records.page';

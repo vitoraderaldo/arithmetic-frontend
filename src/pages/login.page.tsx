@@ -13,7 +13,7 @@ import { useNavigate } from 'react-router-dom';
 import { ApiErrorInterface } from '../api/api.error.interface';
 import { withTransaction } from '@elastic/apm-rum-react';
 
-export const LoginPage = () => {
+const LoginPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
