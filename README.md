@@ -6,7 +6,7 @@ This project requires a backend application to run, which can be found at [arith
 
 ## Live App
 **Staging URL**: 
-https://portal-staging.arithmetic-services.click
+https://dqsexfsgcapl9.cloudfront.net
 
 ## Stack
 The following technologies are employed in this project:
